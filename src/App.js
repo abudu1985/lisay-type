@@ -1,23 +1,84 @@
-import logo from './logo.svg';
+import React, {useState, useEffect, useRef} from 'react';
 import './App.css';
+import TypeManager from "./TypeManager";
+import Modal from "./Modal";
+
+// const string = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+//             deserunt corrupti, ut fugit magni qui quasi nisi amet repellendus non
+//             fuga omnis a sed impedit explicabo accusantium nihil doloremque`;
+
+const string = `Lorem ipsum dolor sit amet,`;
 
 function App() {
+  const [curIndex, setCurIndex] = useState(0);
+  const [type, setType] = useState('default');
+  const [show, setShow] = useState(true);
+    const [secCount, setSecCount] = useState(1);
+    const [typedWords, setTypedWords] = useState(0);
+    const [testPassed, setTestPassed] = useState(false);
+
+    const keyPressHandler = event => {
+      if (string[curIndex] === event.key) {
+        setCurIndex(curIndex => curIndex + 1);
+        setType('default');
+        if (string[curIndex +1] === ' ') {
+            setTypedWords(typedWords => typedWords + 1)
+        }
+        if (curIndex === string.length + 1) {
+            setTestPassed(true);
+            setShow(true);
+        }
+      } else {
+        setType('danger');
+      }
+    }
+
+    useEffect(() => {
+        window.addEventListener('keypress', keyPressHandler)
+        return () => {
+           window.removeEventListener('keypress', keyPressHandler)
+        }
+    });
+
+    const current = string.substring(curIndex, curIndex + 1);
+    const before = curIndex ? string.substring(0, curIndex) : '' ;
+    const after = string.substring(curIndex + 1);
+
+    const start = () => {
+        setShow(false);
+        setCurIndex(0);
+    }
+
+    const cancel = () => {
+        setShow(true);
+    }
+
+    const getTime = time => {
+        setSecCount(time);
+    }
+
+    const renderModalContent = () => {
+        const minutes = secCount / 60;
+        const wpm = typedWords / minutes
+        return testPassed ? //secCount > 1 && typedWords > 1 ?
+            <div className="intro_text">{`Words Per Minute is ${wpm.toFixed(2)}`}</div> :
+            <div className="intro_text">How many WPM (Words Per Minute) could you type ?</div>
+    }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+      <div className="main_text">
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+            {before}
+            <span className={`cur_char_${type}`}>{current}</span>
+            {after}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      </div>
+      <TypeManager cancel={cancel} cancelTimer={show} getTime={getTime}/>
+        <Modal show={show} start={start}>
+            {/*<div className="intro_text">Start typing to check your word-minute score</div>*/}
+            {renderModalContent()}
+        </Modal>
     </div>
   );
 }

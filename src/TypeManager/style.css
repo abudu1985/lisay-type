@@ -1,0 +1,18 @@
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 62px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 54px 2px;
+    cursor: pointer;
+}
+
+.type_manager_block {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}

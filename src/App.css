@@ -36,3 +36,32 @@
     transform: rotate(360deg);
   }
 }
+
+.main_text {
+  width: 800px;
+  border: 2px solid rgb(230, 138, 0);
+  border-radius: 5px;
+  margin: 140px auto 0;
+  padding: 0 10px;
+  line-height: 2;
+  text-align: left;
+  font-size: larger;
+  font-weight: 600;
+}
+
+.cur_char_default {
+  font-weight:bold;
+  background: #7dd00e;
+}
+
+.cur_char_danger {
+  font-weight:bold;
+  background: #ff3dc3;
+}
+
+.intro_text {
+  margin: 30px auto 0;
+  font-size: larger;
+  font-weight: 600;
+}
+
