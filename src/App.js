@@ -1,42 +1,50 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import TypeManager from "./TypeManager";
 import Modal from "./Modal";
+import { facts } from "./facts"
 
-// const string = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
-//             deserunt corrupti, ut fugit magni qui quasi nisi amet repellendus non
-//             fuga omnis a sed impedit explicabo accusantium nihil doloremque`;
-
-const string = `Lorem ipsum dolor sit amet,`;
+function genRandomString() {
+    const shuffled = facts.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 2).join(' ');
+}
 
 function App() {
-  const [curIndex, setCurIndex] = useState(0);
-  const [type, setType] = useState('default');
-  const [show, setShow] = useState(true);
+    const [curIndex, setCurIndex] = useState(0);
+    const [type, setType] = useState('default');
+    const [show, setShow] = useState(true);
     const [secCount, setSecCount] = useState(1);
     const [typedWords, setTypedWords] = useState(0);
     const [testPassed, setTestPassed] = useState(false);
+    const [string, setString] = useState(() => {
+        return genRandomString()
+    });
 
-    const keyPressHandler = event => {
-      if (string[curIndex] === event.key) {
-        setCurIndex(curIndex => curIndex + 1);
-        setType('default');
-        if (string[curIndex +1] === ' ') {
-            setTypedWords(typedWords => typedWords + 1)
-        }
-        if (curIndex === string.length + 1) {
-            setTestPassed(true);
-            setShow(true);
-        }
-      } else {
-        setType('danger');
-      }
+    const containsSpecialCharacters = str => {
+        const regex = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+        return regex.test(str);
     }
 
+    const keyPressHandler = event => {
+        if (string[curIndex] === event.key) {
+            setCurIndex(curIndex => curIndex + 1);
+            setType('default');
+            if (containsSpecialCharacters(string[curIndex]) && !containsSpecialCharacters(string[curIndex - 1])) {
+                setTypedWords(typedWords => typedWords + 1)
+            }
+            if (curIndex === string.length - 1) {
+                setTestPassed(true);
+                setShow(true);
+            }
+        } else {
+            setType('danger');
+        }
+    };
+
     useEffect(() => {
-        window.addEventListener('keypress', keyPressHandler)
+        window.addEventListener('keypress', keyPressHandler);
         return () => {
-           window.removeEventListener('keypress', keyPressHandler)
+            window.removeEventListener('keypress', keyPressHandler)
         }
     });
 
@@ -45,8 +53,12 @@ function App() {
     const after = string.substring(curIndex + 1);
 
     const start = () => {
+        setString(genRandomString());
         setShow(false);
         setCurIndex(0);
+        setTestPassed(false);
+        setTypedWords(0);
+        setType('default');
     }
 
     const cancel = () => {
@@ -59,28 +71,31 @@ function App() {
 
     const renderModalContent = () => {
         const minutes = secCount / 60;
-        const wpm = typedWords / minutes
-        return testPassed ? //secCount > 1 && typedWords > 1 ?
-            <div className="intro_text">{`Words Per Minute is ${wpm.toFixed(2)}`}</div> :
+        const wpm = typedWords / minutes;
+        return testPassed ?
+            <div className="intro_text">
+                <p>minutes: {minutes.toFixed(2)}</p>
+                <p>words: {typedWords}</p>
+                {`Words Per Minute is ${wpm.toFixed(2)}`}
+            </div> :
             <div className="intro_text">How many WPM (Words Per Minute) could you type ?</div>
     }
 
-  return (
-    <div className="App">
-      <div className="main_text">
-        <p>
-            {before}
-            <span className={`cur_char_${type}`}>{current}</span>
-            {after}
-        </p>
-      </div>
-      <TypeManager cancel={cancel} cancelTimer={show} getTime={getTime}/>
-        <Modal show={show} start={start}>
-            {/*<div className="intro_text">Start typing to check your word-minute score</div>*/}
-            {renderModalContent()}
-        </Modal>
-    </div>
-  );
+    return (
+        <div className="App">
+            <div className="main_text">
+                <p>
+                    {before}
+                    <span className={`cur_char_${type}`}>{current}</span>
+                    {after}
+                </p>
+            </div>
+            <TypeManager cancel={cancel} cancelTimer={show} getTime={getTime} testPassed={testPassed}/>
+            <Modal show={show} start={start}>
+                {renderModalContent()}
+            </Modal>
+        </div>
+    );
 }
 
 export default App;
