@@ -61,13 +61,9 @@ function App() {
         setType('default');
     }
 
-    const cancel = () => {
-        setShow(true);
-    }
+    const cancel = React.useCallback(() => setShow(true), [show]);
 
-    const getTime = time => {
-        setSecCount(time);
-    }
+    const getTime = React.useCallback(time => setSecCount(time), [show]);
 
     const renderModalContent = () => {
         const minutes = secCount / 60;
@@ -78,7 +74,10 @@ function App() {
                 <p>words: {typedWords}</p>
                 {`Words Per Minute is ${wpm.toFixed(2)}`}
             </div> :
-            <div className="intro_text">How many WPM (Words Per Minute) could you type ?</div>
+            <div className="intro_text">
+                <p>How many WPM (Words Per Minute) could you type ?</p>
+                <p>Please type all proposed text!)</p>
+            </div>
     }
 
     return (

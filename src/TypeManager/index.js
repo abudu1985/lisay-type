@@ -16,4 +16,4 @@ const TypeManager = ({cancel, cancelTimer, getTime, testPassed}) => {
     );
 };
 
-export default TypeManager;
+export default React.memo(TypeManager);

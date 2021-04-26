@@ -14,5 +14,8 @@
 .type_manager_block {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+    width: auto;
+    max-width: 800px;
+    margin: auto;
 }
