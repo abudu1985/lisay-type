@@ -3,10 +3,13 @@ import './App.css';
 import TypeManager from "./TypeManager";
 import Modal from "./Modal";
 import { facts } from "./facts"
+import PdfButton from "./pdf/PdfButton"
+import Button from './Button';
 
 function genRandomString() {
-    const shuffled = facts.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 2).join(' ');
+    return 'hello world here.';
+    // const shuffled = facts.sort(() => 0.5 - Math.random());
+    // return shuffled.slice(0, 2).join(' ');
 }
 
 function App() {
@@ -73,10 +76,15 @@ function App() {
                 <p>minutes: {minutes.toFixed(2)}</p>
                 <p>words: {typedWords}</p>
                 {`Words Per Minute is ${wpm.toFixed(2)}`}
+                <div className="result_manager_block">
+                    <Button text="Start" start={start} />
+                    <PdfButton minutes={minutes} typedWords={typedWords}/>
+                </div>
             </div> :
             <div className="intro_text">
                 <p>How many WPM (Words Per Minute) could you type ?</p>
                 <p>Please type all proposed text!)</p>
+                <Button text="Start" start={start} />
             </div>
     }
 
@@ -90,7 +98,7 @@ function App() {
                 </p>
             </div>
             <TypeManager cancel={cancel} cancelTimer={show} getTime={getTime} testPassed={testPassed}/>
-            <Modal show={show} start={start}>
+            <Modal show={show} >
                 {renderModalContent()}
             </Modal>
         </div>
