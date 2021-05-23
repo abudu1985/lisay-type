@@ -7,9 +7,8 @@ import PdfButton from "./pdf/PdfButton"
 import Button from './Button';
 
 function genRandomString() {
-    return 'hello world here.';
-    // const shuffled = facts.sort(() => 0.5 - Math.random());
-    // return shuffled.slice(0, 2).join(' ');
+    const shuffled = facts.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 2).join(' ');
 }
 
 function App() {
